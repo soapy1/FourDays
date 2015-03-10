@@ -25,7 +25,7 @@ game_path = {
                                 'times': 10,
                                 'next': 
                                     {
-                                        'cond': 'other thing',
+                                        'cond': 'You start to work',
                                         'act': [
                                             {
                                                 'opt':1,
@@ -166,7 +166,8 @@ def main():
             elif opt in ['1','2','3','4','5']:
                 for i in current_pos['act']:
                     if (int(opt) == i['opt']):
-                        print(i['outcome'])
+                        if (i['outcome']):
+                            print('\n' + i['outcome'] + '\n')
                         current_pos = i['next']
             elif opt == "work":
                 if challenge('work', 10):
