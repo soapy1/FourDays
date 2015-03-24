@@ -2,6 +2,7 @@
 A game! (using python 3)
 '''
 from Person import Person
+from Map import Map
 
 game_path = {
     'cond':'You need to wake up to get to work',
@@ -139,13 +140,20 @@ def story_intro():
     print("It's a scoldering hot day!\n ")
 
 def main():
-    current_pos = game_path
+    m = Map()
+    m.ghettoGen()
+    current_pos = m.mappola
     
 #    story_intro()
     player = intro2()
     print_stats(player)
     game = True
     while game == True:
+        if (current_pos == {}):
+            game = False
+            print_stats(player)
+            break
+        
         if (current_pos['cond'] == "challenge"):
             print("CHALLENGE: type {0} {1} time".format(current_pos['word'], current_pos['times']))
             if challenge(current_pos['word'], current_pos['times']):
@@ -158,14 +166,20 @@ def main():
             for i in current_pos['act']:
                 print(" - [{0}] {1}".format(i['opt'], i['val']))
 
-
             opt = input("\nwhat do you do? ").lower()
 
             if opt == "q":
                 game = False
+            elif opt == "stats":
+                print_stats(player)
+            elif opt == 'debug':
+                for i in current_pos['act']:
+                    print(i['outcome'])
             elif opt in ['1','2','3','4','5']:
                 for i in current_pos['act']:
                     if (int(opt) == i['opt']):
+                        player.health += i['health']
+                        player.money += i['money']
                         if (i['outcome']):
                             print('\n' + i['outcome'] + '\n')
                         current_pos = i['next']

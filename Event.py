@@ -1,7 +1,6 @@
-class Event:
-    def __init__(on, ov, oo, d, ne, c):
-        # the option selection (from above)
-        self.opt_number = on
+class Event(object):
+
+    def __init__(self, ov, oo, d, ne, c):
         # the option number (from above)
         self.opt_value = ov
         # the outcome of choose this option
@@ -13,5 +12,3 @@ class Event:
         # a desctipyion of the challenge for the user (if applicable) form:
         # challenge = {'word':'sorry', 'time':10}
         self.challenge = c
-        
-        
