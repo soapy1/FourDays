@@ -141,7 +141,7 @@ def story_intro():
 
 def main():
     m = Map()
-    m.ghettoGen()
+    m.genMap()
     current_pos = m.mappola
     
 #    story_intro()
