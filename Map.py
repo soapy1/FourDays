@@ -26,28 +26,67 @@ class Map:
         wb['act'].append({'opt':2, 'health':1, 'money':0, 'outcome':None, 'val':'break', 'next':{}})
         return wb
 
-    def genGetNewJobStory(self):
-        pass
-
     def genGoHomeStory(self):
-        pass
+        done = {'cond':'done'}
+
+        e_home_safe = {'cond':'you get home safely. You must give your family money so they can continue to live', 'act':[]}
+        act_give_money = {'opt':1, 'health':0, 'money':-4, 'outcome':'your family lives other day', 'val':'give your family money', 'next':done}
+        act_keep_money = {'opt':2, 'health':-99999, 'money':0, 'outcome':'your family does not live', 'val':'don\'t give your family money', 'next':done}
+        e_home_safe['act'].append(act_give_money)
+        e_home_safe['act'].append(act_keep_money)
+
+        e_go_home = {'cond':'you finish and on your way home pass by a store', 'act':[]}
+        act_water = {'opt':1, 'health':1, 'money':-1, 'outcome':None, 'val':'buy water', 'next':e_home_safe}
+        act_home = {'opt':2, 'health':0, 'money':0, 'outcome':None, 'val':'don\'t stop', 'next':e_home_safe}
+        if (randint(0,100) == 1):
+            act_water['health'] = -10
+            act_water['money'] = -7
+            act_water['outcome'] = 'On your way home you were mugged'
+            act_home['health'] = -10
+            act_home['money'] = -7   
+            act_home['outcome'] = 'On your way home you were mugged'
+        e_go_home['act'].append(act_water)
+        e_go_home['act'].append(act_home)
+        return e_go_home
+
+    def genGetNewJobStory(self):
+        e_drugs = {'cond':'you have some drugs you need to sell', 'act':[]}
+        act_sell = {'opt':1, 'health':-3, 'money':3, 'outcome':None, 'val':'found someone to sell to', 'next':self.genGoHomeStory()}
+        act_take = {'opt':2, 'health':-2, 'money':-1, 'outcome':None, 'val':'take the drugs', 'next':self.genGoHomeStory()}
+        e_drugs['act'].append(act_sell)
+        e_drugs['act'].append(act_take)
+
+        act_drugs = {'opt':1, 'health':0, 'money':-1, 'outcome':None, 'val':'drugs', 'next':e_drugs}
+        if (randint(0,25) == 10):
+            act_drugs['outcome'] = "you get mugged and loose all your product"
+            act_drugs['health'] = -4
+            act_drugs['money'] = -1
+            act_drugs['next'] = self.genGoHomeStory()
+
+        ch_job = {'cond':'choose what kind of job you want to have', 'act':[]}
+        act_slavery = {'opt':2, 'health':-2, 'money':2, 'outcome':'you get sold to a man for 1 hour', 'val':'sex slavery', 'next':self.genGoHomeStory()}
+        act_go_home = {'opt':3, 'health':0, 'money':0, 'outcome':None, 'val':'nevermind, I want to go home', 'next':self.genGoHomeStory()}
+        ch_job['act'].append(act_drugs)
+        ch_job['act'].append(act_slavery)
+        ch_job['act'].append(act_go_home)
+        return ch_job
 
     def genGetFoodStory(self):
-        pass
-
-    def genGetMedicineStory(self):
-        pass
+        e_food = {'cond':'you go to the local store and get some food', 'act':[]}
+        act_yes = {'opt':1, 'health':2, 'money':-1, 'outcome':None, 'val':'cost: 1, health: +2', 'next':self.genGoHomeStory()}
+        act_no = {'opt':2, 'health':4, 'money':-2, 'outcome':None, 'val':'cost: 2, health: +4', 'next':self.genGoHomeStory()}
+        e_food['act'].append(act_yes)
+        e_food['act'].append(act_no)
+        return e_food
 
     def genMap(self):
         e_done_work = {'cond':'you have finished your job for the day', 'act':[]}
-        act_new_job = {'opt':1, 'health':0, 'money':0, 'outcome':None, 'val':'look for new job', 'next':{}}
-        act_go_home = {'opt':2, 'health':0, 'money':0, 'outcome':None, 'val':'go home', 'next':{}}
-        act_get_food = {'opt':3, 'health':0, 'money':0, 'outcome':None, 'val':'go get food', 'next':{}}
-        act_get_medicine = {'opt':4, 'health':0, 'money':0, 'outcome':None, 'val':'wake up at 7am', 'next':{}}
+        act_new_job = {'opt':1, 'health':0, 'money':0, 'outcome':None, 'val':'look for new job', 'next':self.genGetNewJobStory()}
+        act_go_home = {'opt':2, 'health':0, 'money':0, 'outcome':None, 'val':'go home', 'next':self.genGoHomeStory()}
+        act_get_food = {'opt':3, 'health':0, 'money':0, 'outcome':None, 'val':'go get food', 'next':self.genGetFoodStory()}
         e_done_work['act'].append(act_new_job)
         e_done_work['act'].append(act_go_home)
         e_done_work['act'].append(act_get_food)
-        e_done_work['act'].append(act_get_medicine)
 
         sorry_c = {'cond':'challenge', 'word':'sorry', 'times':10, 'next':{}}
         work_c = {'cond':'challenge', 'word':'work', 'times':10, 'next':{}}
@@ -104,8 +143,8 @@ class Map:
 
         e3['act'].append(e3_o1)
         e3['act'].append(e3_o2)
-        e3_o1['next'] = work_break
-        e3_o1['next']['next'] = work_break
+        e3_o1['next'] = work_c
+        e3_o1['next']['next'] = e_done_work
         e3_o2['next'] = work_break
         
         e2_o1['next']['next'] = e3

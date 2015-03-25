@@ -56,13 +56,17 @@ def main():
     while game == True:
         if (player.health <= 0 or player.money <= 0):
             print ('your health is {0} and you have {1} money \n GAME OVER'.format(player.health, player.money))
+            break
 
         if (current_pos == {}):
             game = False
             print_stats(player)
             break
         
-        if (current_pos['cond'] == "challenge"):
+        if (current_pos['cond'] == "done"):
+            m.genMap()
+            current_pos = m.mappola
+        elif (current_pos['cond'] == "challenge"):
             print("CHALLENGE: type {0} {1} time".format(current_pos['word'], current_pos['times']))
             if challenge(current_pos['word'], current_pos['times']):
                 player.money += 1
