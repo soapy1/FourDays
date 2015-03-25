@@ -54,6 +54,10 @@ def main():
     print_stats(player)
     game = True
     while game == True:
+        if (player.money >= 20):
+            print('it was a long and hard road but you escaped poverty.')
+            print('YOU WIN')
+            break
         if (player.health <= 0 or player.money <= 0):
             print ('your health is {0} and you have {1} money \n GAME OVER'.format(player.health, player.money))
             break
