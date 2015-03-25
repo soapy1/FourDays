@@ -4,102 +4,6 @@ A game! (using python 3)
 from Person import Person
 from Map import Map
 
-game_path = {
-    'cond':'You need to wake up to get to work',
-    'act': [
-        {
-            'opt':1, 
-            'outcome': None,
-            'val': 'wake up at 7am', 
-            'pre':[], 
-            'next': 
-                {
-                    'cond': 'you need to get to work',
-                    'act': [{
-                            'opt':1,
-                            'outcome': 'Manager is mad. You get beat.', 
-                            'val':'walk',
-                            'pre':[],
-                            'next':{
-                                'cond': 'challenge',
-                                'word': 'sorry',
-                                'times': 10,
-                                'next': 
-                                    {
-                                        'cond': 'You start to work',
-                                        'act': [
-                                            {
-                                                'opt':1,
-                                                'outcome': None,
-                                                'val':'walk',
-                                                'pre':[],
-                                                'next':{
-                                                    'cond': '',
-                                                    'act': []
-                                                }
-                                            },
-                                            {
-                                                'opt':2,
-                                                'outcome': None,
-                                                'val':'run',
-                                                'pre':[],
-                                                'next':{
-                                                    'cond': '',
-                                                    'act': []
-                                                }
-                                            }
-                                        ]
-                                    }
-                            }
-                        },
-                        {
-                            'opt':2,
-                            'outcome': None,
-                            'val':'run',
-                            'pre':[],
-                            'next':{
-                                'cond': '',
-                                'act': []
-                            }
-                        }
-                    ]
-                }
-        },
-        {
-            'opt':2, 
-            'outcome': None,
-            'val': 'wake up at 6am', 
-            'pre':[], 
-            'next': 
-                {
-                    'cond': 'you need to get to work',
-                    'act': [
-                        {
-                            'opt':1,
-                            'outcome': None,
-                            'val':'walk',
-                            'pre':[],
-                            'next':{
-                                'cond': '',
-                                'act': []
-                            }
-                        },
-                        {
-                            'opt':2,
-                            'outcome': None,
-                            'val':'run',
-                            'pre':[],
-                            'next':{
-                                'cond': '',
-                                'act': []
-                            }
-                        }
-                    ]
-                }
-        }
-    ]
-}
-
 def intro():
     money = 10
     health = 10
@@ -144,11 +48,15 @@ def main():
     m.genMap()
     current_pos = m.mappola
     
-#    story_intro()
+    #story_intro()
+    # TODO: change intro2() to intro()
     player = intro2()
     print_stats(player)
     game = True
     while game == True:
+        if (player.health <= 0 or player.money <= 0):
+            print ('your health is {0} and you have {1} money \n GAME OVER'.format(player.health, player.money))
+
         if (current_pos == {}):
             game = False
             print_stats(player)
@@ -157,14 +65,16 @@ def main():
         if (current_pos['cond'] == "challenge"):
             print("CHALLENGE: type {0} {1} time".format(current_pos['word'], current_pos['times']))
             if challenge(current_pos['word'], current_pos['times']):
+                player.money += 1
                 print("good job")
             else:
+                player.health -= 1
                 print("you fail")
             current_pos = current_pos['next']
         else: 
             print('\n' + current_pos['cond'])
             for i in current_pos['act']:
-                print(" - [{0}] {1}".format(i['opt'], i['val']))
+                print("  [{0}] {1}".format(i['opt'], i['val']))
 
             opt = input("\nwhat do you do? ").lower()
 
@@ -173,8 +83,7 @@ def main():
             elif opt == "stats":
                 print_stats(player)
             elif opt == 'debug':
-                for i in current_pos['act']:
-                    print(i['outcome'])
+                print(current_pos)
             elif opt in ['1','2','3','4','5']:
                 for i in current_pos['act']:
                     if (int(opt) == i['opt']):
@@ -186,8 +95,10 @@ def main():
             elif opt == "work":
                 if challenge('work', 10):
                     print("good job for today")
+                    player.money += 1
                 else:
                     print("you fail")
+                    player.health -= 1
             else:
                 print(("you said {0}").format(opt))
 
