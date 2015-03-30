@@ -4,22 +4,33 @@ A game! (using python 3)
 from Person import Person
 from Map import Map
 
+title = '''
+______              _         _   _            _ _  __     
+|  _  \            (_)       | | | |          | (_)/ _|    
+| | | |__ _ _   _   _ _ __   | |_| |__   ___  | |_| |_ ___ 
+| | | / _` | | | | | | '_ \  | __| '_ \ / _ \ | | |  _/ _ \\
+| |/ / (_| | |_| | | | | | | | |_| | | |  __/ | | | ||  __/
+|___/ \__,_|\__, | |_|_| |_|  \__|_| |_|\___| |_|_|_| \___|
+             __/ |                                         
+            |___/                                          
+'''
+
 def intro():
+    print(title) 
     money = 10
     health = 10
     player = Person(health, money)
     gender = input("are you a \n - boy [b] \n - girl [g] \n")
     if (gender == "b" or gender == "g"):
-        player.set_gender(gender)
+        if gender == "b":
+            player.set_gender("boy")
+        else:
+            player.set_gender("girl")
     else:
-        player.set_gener(None)
-    factory = input("\nare you in a: \n - shoe factory [s] \n - electronics factory [e] \n - clothing factory [c] \n")
-    if (factory == "s" or factory == "e" or factory == "c"):
-        player.set_factory(factory)
-    else:
-        player.set_factory(None)
+        player.set_gender(None)
+    name = input("what is your name: ")
+    player.name = name
     return player
-
 
 def intro2():
     return Person(10,10)
@@ -39,18 +50,23 @@ def print_stats(p):
     print(" - have {0} dollars".format(p.get_money()))
     print(" - have {0} health\n".format(p.get_health()))
 
-def story_intro():
+def story_intro(p):
     print("\n")
-    print("It's a scoldering hot day!\n ")
+    print('Happy birthday to {0}, happy birthday to {0}'.format(p.get_name()))
+    print('You are finally 10 years old!')
+    input('')
+    print('Father: {0}, you are no longer a little {1}. You need to get a job to help support the family'.format(p.get_name(), p.get_gender()))
+    print('Mother: Ever since your older brother lost his arm at the factory the family has been suffering.')
+    print('You: Yes father, I\'ll start working at the factory tomorrow')
+    r = input ("\nready? ")
 
 def main():
     m = Map()
     m.genMap()
     current_pos = m.mappola
     
-    #story_intro()
-    # TODO: change intro2() to intro()
-    player = intro2()
+    player = intro()
+    story_intro(player)
     print_stats(player)
     game = True
     while game == True:
@@ -59,7 +75,7 @@ def main():
             print('YOU WIN')
             break
         if (player.health <= 0 or player.money <= 0):
-            print ('your health is {0} and you have {1} money \n GAME OVER'.format(player.health, player.money))
+            print ('\nGAME OVER'.format(player.health, player.money))
             break
 
         if (current_pos == {}):

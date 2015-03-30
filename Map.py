@@ -39,11 +39,11 @@ class Map:
         act_water = {'opt':1, 'health':1, 'money':-1, 'outcome':None, 'val':'buy water', 'next':e_home_safe}
         act_home = {'opt':2, 'health':0, 'money':0, 'outcome':None, 'val':'don\'t stop', 'next':e_home_safe}
         if (randint(0,100) == 1):
-            act_water['health'] = -10
-            act_water['money'] = -7
+            act_water['health'] = act_water['health']-7
+            act_water['money'] = act_water['money']-7
             act_water['outcome'] = 'On your way home you were mugged'
-            act_home['health'] = -10
-            act_home['money'] = -7   
+            act_home['health'] = act_home['health']-7
+            act_home['money'] = act_home['money']-7   
             act_home['outcome'] = 'On your way home you were mugged'
         e_go_home['act'].append(act_water)
         e_go_home['act'].append(act_home)
@@ -60,7 +60,7 @@ class Map:
         if (randint(0,25) == 10):
             act_drugs['outcome'] = "you get mugged and loose all your product"
             act_drugs['health'] = -4
-            act_drugs['money'] = -1
+            act_drugs['money'] = -5
             act_drugs['next'] = self.genGoHomeStory()
 
         ch_job = {'cond':'choose what kind of job you want to have', 'act':[]}
